@@ -1,0 +1,25 @@
+{
+  "name": "movie",
+  "description": "0.0.1",
+  "main": "sun movie xiaozhan",
+  "keywords": [
+    "movie"
+  ],
+  "authors": [
+    "sun"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}

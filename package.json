@@ -1,0 +1,23 @@
+{
+  "name": "movie",
+  "version": "0.0.1",
+  "description": "sun movie xiaozhan",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "jade": "^1.11.0",
+    "moment": "^2.13.0",
+    "mongoose": "^4.5.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "movie"
+  ],
+  "author": "sun",
+  "license": "ISC"
+}
