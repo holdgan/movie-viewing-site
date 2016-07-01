@@ -3,6 +3,7 @@ var path=require('path');
 var mongoose=require('mongoose')
 var _=require('underscore')
 var Movie=require('./models/movie')
+var User=require('./models/user')
 var port =process.env.PORT || 3000
 var app=express();
 
@@ -18,6 +19,7 @@ app.listen(port);
 console.log('started on port '+port);
 
 
+//首页
 app.get('/',function(req,res){
 	Movie.fetch(function(err,movies){
 		if(err){
@@ -30,17 +32,46 @@ app.get('/',function(req,res){
 	})	
 })
 
+
+//注册用户
+app.post('/user/signup',function(req,res){
+	var _user=req.body.user
+
+	User.findOne({name:_user.name},function(err,user){
+		if(err){
+			console.log(err);
+		}
+		if(user){
+			return res.redirect('/');
+		}
+		else{
+			var user=new User(_user)
+
+			user.save(function(err,user){
+				if(err){
+					console.log(err)
+				}
+				res.redirect('/admin/userlist')
+			})
+		}
+	})
+})
+
+
+//电影详情
 app.get('/movie/:id',function(req,res){
 	var id=req.params.id
 
 	Movie.findById(id,function(err,movie){
 		res.render('detail',{
-			title:'详情',
+			title:movie.title+'详情',
 			movie:movie
 		})
 	})
 })
 
+
+//录入电影
 app.get('/admin/movie',function(req,res){
 	res.render('admin',{
 		title:'后台录入',
@@ -50,13 +81,14 @@ app.get('/admin/movie',function(req,res){
 			country:'',
 			year:'',
 			poster:'',
-			flash:'',
+			flash:'http://player.video.qiyi.com/c19bec8ea58e4fda8726fa9b65b63a44/0/0/w_19rt21y5u1.swf-albumId=5781367909-tvId=5781367909-isPurchase=0-cnId=10',
 			summary:'',
 			language:''
 		}
 	})
 })
 
+//电影列表-修改
 app.get('/admin/update/:id',function(req,res){
 	var id=req.params.id
 
@@ -70,7 +102,7 @@ app.get('/admin/update/:id',function(req,res){
 	}
 })
 
-
+//新的电影
 app.post('/admin/movie/new',function(req,res){
 	var id=req.body.movie._id
 	var movieObj=req.body.movie
@@ -112,18 +144,34 @@ app.post('/admin/movie/new',function(req,res){
 	}
 })
 
+//电影列表
 app.get('/admin/list',function(req,res){
 	Movie.fetch(function(err,movies){
 		if(err){
 			console.log(err)
 		}
 		res.render('list',{
-			title:'列表',
+			title:'电影列表',
 			movies:movies
 		})
 	})
 })
 
+//电影列表
+app.get('/admin/userlist',function(req,res){
+	User.fetch(function(err,users){
+		if(err){
+			console.log(err)
+		}
+		res.render('userlist',{
+			title:'用户列表',
+			users:users
+		})
+	})
+})
+
+
+//电影列表-删除
 app.delete('/admin/list',function(req,res){
 	var id=req.query.id
 
@@ -213,7 +261,7 @@ app.delete('/admin/list',function(req,res){
 // 			year:2016,
 // 			language:'CHinese',
 // 			flash:'http://player.youku.com/player.php/Type/Folder/Fid/27495291/Ob/1/sid/XMTYxNTkzMjI5Mg==/v.swf'
-			
+
 // 		}]
 // 	})
 // })
