@@ -1,7 +1,7 @@
 var _=require('underscore')
 var Movie=require('../models/movie')
-//电影详情
 
+//电影详情
 exports.detail=function(req,res){
 	var id=req.params.id
 

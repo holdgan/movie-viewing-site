@@ -1,6 +1,6 @@
 var User=require('../models/user')
 
-//注册用户
+//注册弹窗
 exports.signup=function(req,res){
 	var _user=req.body.user
 
@@ -9,7 +9,7 @@ exports.signup=function(req,res){
 			console.log(err);
 		}
 		if(user){
-			return res.redirect('/');
+			return res.redirect('/signin');
 		}
 		else{
 			var user=new User(_user)
@@ -18,13 +18,13 @@ exports.signup=function(req,res){
 				if(err){
 					console.log(err)
 				}
-				res.redirect('/admin/userlist')
+				res.redirect('/')
 			})
 		}
 	})
 }
 
-//登录
+//登录弹窗
 exports.signin=function(req,res){
 	var _user=req.body.user
 	var name=_user.name
@@ -36,7 +36,8 @@ exports.signin=function(req,res){
 		}
 
 		if(!user){
-			console.log('no signup');
+			// console.log('no signup');
+			return res.redirect('/signup')
 		}
 
 		user.comparePassword(password,function(err,isMatch){
@@ -46,11 +47,12 @@ exports.signin=function(req,res){
 
 			if(isMatch){
 				req.session.user=user
-				console.log('password compare')
-				res.redirect('/')
+				// console.log('password compare')
+				return res.redirect('/')
 			}
 			else{
-				console.log('password err')
+				return res.redirect('/signin')
+				// console.log('password err')
 			}
 		})
 	})
@@ -62,8 +64,8 @@ exports.logout=function(req,res){
 	delete req.session.user
 	res.redirect('/')
 }
-//用户列表
 
+//用户列表
 exports.list=function(req,res){
 	User.fetch(function(err,users){
 		if(err){
@@ -74,4 +76,36 @@ exports.list=function(req,res){
 			users:users
 		})
 	})
+}
+
+//注册
+exports.showSignup=function(req,res){
+	res.render('signup',{
+			title:'注册',
+	})
+}
+
+//登录
+exports.showSignin=function(req,res){
+	res.render('signin',{
+			title:'登录',
+	})
+}
+
+//中间件  登录
+exports.signinRequired=function(req,res,next){
+	var user=req.session.user
+	if(!user){
+		return res.redirect('/signin')
+	}
+	next()
+}
+
+//中间件  权限
+exports.adminRequired=function(req,res,next){
+	var user=req.session.user
+	if(user.role<=10){
+		return res.redirect('/signin')
+	}
+	next()
 }

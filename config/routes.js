@@ -13,26 +13,21 @@ module.exports=function(app){
 	//首页
 	app.get('/',Index.index)
 
-	//注册用户
-	app.post('/user/signup',User.signup)
-	//登录
-	app.post('/user/signin',User.signin)
-	//登出
-	app.get('/logout',User.logout)
-	//用户列表
-	app.get('/admin/userlist',User.list)
 
-	//电影详情
+	//User
+	app.post('/user/signup',User.signup)
+	app.post('/user/signin',User.signin)
+	app.get('/signin',User.showSignin)
+	app.get('/signup',User.showSignup)
+	app.get('/logout',User.logout)
+	app.get('/admin/user/list',User.signinRequired,User.adminRequired,User.list)
+
+	//Movie
 	app.get('/movie/:id',Movie.detail)
-	//录入电影
-	app.get('/admin/movie',Movie.save)
-	//电影列表-修改
-	app.get('/admin/update/:id',Movie.update)
-	//新的电影
-	app.post('/admin/movie/new',Movie.new)
-	//电影列表
-	app.get('/admin/list',Movie.list)
-	//电影列表-删除
-	app.delete('/admin/list',Movie.del)
+	app.get('/admin/movie',User.signinRequired,User.adminRequired,Movie.save)
+	app.get('/admin/movie/update/:id',User.signinRequired,User.adminRequired,Movie.update)
+	app.post('/admin/movie/new',User.signinRequired,User.adminRequired,Movie.new)
+	app.get('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.list)
+	app.delete('/admin/movie/list',User.signinRequired,User.adminRequired,Movie.del)
 
 }

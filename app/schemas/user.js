@@ -8,6 +8,11 @@ var UserSchema=new mongoose.Schema({
 		type:String
 	},
 	password:String,
+	//角色 0:普通用户 1:确认中用户 2：完善用户 3~~~ >10：管理员 >50：超级 
+	role:{
+		type:Number,
+		default:0
+	},
 	meta:{
 		createAt:{
 			type:Date,
