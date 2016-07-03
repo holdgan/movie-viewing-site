@@ -1,14 +1,22 @@
 var _=require('underscore')
 var Movie=require('../models/movie')
+var Comment=require('../models/comment')
 
 //电影详情
 exports.detail=function(req,res){
 	var id=req.params.id
 
 	Movie.findById(id,function(err,movie){
-		res.render('detail',{
-			title:movie.title+'详情',
-			movie:movie
+		Comment
+			.find({movie:id})
+			.populate('from','name')
+			.populate('reply.from reply.to','name')
+			.exec(function(err,comments){
+				res.render('detail',{
+					title:movie.title+'详情',
+					movie:movie,
+					comments:comments
+			})
 		})
 	})
 }
