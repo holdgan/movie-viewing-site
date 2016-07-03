@@ -31,30 +31,41 @@ UserSchema.pre('save',function(next){
 
 	bcrypt.genSalt(SALT_WORK_FACTOR,function(err,salt){
 		if(err) return next(err)
-			bcrypt.hash(user.password,salt,function(err,hash){
-				if(err) return next(err)
 
-				user.password=hash
-				next()
-			})
+		bcrypt.hash(user.password,salt,function(err,hash){
+			if(err) return next(err)
+
+			console.log('加盐前的密码：'+user.password)
+			user.password=hash
+			console.log('加盐后的密码：'+user.password)
+			next()
+		})
 	})
-
-	next()
 })
+
+UserSchema.methods={
+	comparePassword:function(_password,cb){
+		bcrypt.compare(_password,this.password,function(err,isMatch){
+			if(err) return cb(err)
+
+			cb(null,isMatch)
+		})
+	}
+}
 
 UserSchema.statics={
 	//取出数据库所有数据
 	fetch:function(cb){
 		return this
-			.find({})
-			.sort('meta.updateAt')
-			.exec(cb)
+		.find({})
+		.sort('meta.updateAt')
+		.exec(cb)
 	},
 	//查询数据
 	findById:function(id,cb){
 		return this
-			.findOne({_id:id})
-			.exec(cb)
+		.findOne({_id:id})
+		.exec(cb)
 	}
 }
 

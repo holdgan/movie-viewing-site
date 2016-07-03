@@ -1,10 +1,14 @@
 var express=require('express');
 var path=require('path');
 var mongoose=require('mongoose')
+var bcrypt=require('bcrypt')
+var SALT_WORK_FACTOR=10
 var _=require('underscore')
 var Movie=require('./models/movie')
 var User=require('./models/user')
 var port =process.env.PORT || 3000
+var cookieSession = require('cookie-session')
+var cookieParser = require('cookie-parser');
 var app=express();
 
 mongoose.connect('mongodb://localhost/webtest1')
@@ -12,6 +16,11 @@ mongoose.connect('mongodb://localhost/webtest1')
 app.set('views','./views/pages');
 app.set('view engine','jade');
 app.use(require('body-parser').urlencoded({extended: true}))
+app.use(cookieParser());
+app.use(cookieSession({
+	name: 'session',
+	keys:['key1','key2']
+}));
 app.use(express.static(path.join(__dirname,'public/')))
 app.locals.moment=require('moment')
 app.listen(port);
@@ -21,6 +30,9 @@ console.log('started on port '+port);
 
 //首页
 app.get('/',function(req,res){
+	console.log('session: ')
+	console.log(req.session.user)
+
 	Movie.fetch(function(err,movies){
 		if(err){
 			console.log(err)
@@ -54,6 +66,38 @@ app.post('/user/signup',function(req,res){
 				res.redirect('/admin/userlist')
 			})
 		}
+	})
+})
+
+//登录
+app.post('/user/signin',function(req,res){
+	var _user=req.body.user
+	var name=_user.name
+	var password=_user.password
+
+	User.findOne({name:name},function(err,user){
+		if(err){
+			console.log(err);
+		}
+
+		if(!user){
+			console.log('no signup');
+		}
+
+		user.comparePassword(password,function(err,isMatch){
+			if(err){
+				console.log(err)
+			}
+
+			if(isMatch){
+				req.session.user=user
+				console.log('password compare')
+				res.redirect('/')
+			}
+			else{
+				console.log('password err')
+			}
+		})
 	})
 })
 
