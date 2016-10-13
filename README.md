@@ -1,3 +1,6 @@
 # nodejs_movie-viewing-site
-用nodejs写的电影网站
+
+nodejs  简易电影网站
+
+带有评论功能
 
