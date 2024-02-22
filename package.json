@@ -1,7 +1,7 @@
 {
-  "name": "movie",
-  "version": "0.0.1",
-  "description": "sun movie xiaozhan",
+  "name": "movie-viewing-site",
+  "version": "1.0.0",
+  "description": "movie xiaozhan",
   "main": "app.js",
   "dependencies": {
     "bcrypt": "^0.8.7",
@@ -22,6 +22,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+      "url": "git+https://github.com/holdgan/movie-viewing-site"
   },
   "keywords": [
     "movie"
